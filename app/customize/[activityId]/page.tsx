@@ -107,7 +107,7 @@ export default function EditorPage() {
         try {
             // Get map canvas
             let mapDataUrl: string | null = null;
-            if (mapRef.current && activity.map?.summary_polyline) {
+            if (mapRef.current && activity && activity.map?.summary_polyline) {
                 mapDataUrl = await mapRef.current.getMapCanvas();
             }
 
@@ -118,7 +118,7 @@ export default function EditorPage() {
                 quality: 1,
                 pixelRatio: 3,
                 cacheBust: false,
-                backgroundColor: null,
+                backgroundColor: '#000000',
             });
 
             const cardElement = cardRef.current;
@@ -522,7 +522,7 @@ export default function EditorPage() {
                                             <button
                                                 key={icon.name}
                                                 onClick={() => setSelectedIcon(icon)}
-                                                className={`h-14 rounded-xl flex flex-col items-center justify-center gap-1 transition-all ${selectedIcon.name === icon.name
+                                                className={`h-14 rounded-xl flex flex-col items-center justify-center gap-1 transition-all ${selectedIcon?.name === icon.name
                                                     ? 'bg-primary text-white scale-110 shadow-lg shadow-primary/30 ring-2 ring-primary/50'
                                                     : 'bg-white/5 text-white/50 hover:bg-white/10 hover:text-white border border-white/10'
                                                     }`}
@@ -601,7 +601,7 @@ export default function EditorPage() {
                                 <div className="glass-effect pl-1 pr-5 py-1 rounded-full flex items-center gap-3 border border-white/20 shadow-lg">
                                     <div className={`size-10 rounded-full flex items-center justify-center ${themes[overlayTheme as keyof typeof themes].iconBg} ${themes[overlayTheme as keyof typeof themes].iconText}`}>
                                         <span
-                                            className={`material-symbols-outlined text-[20px]  ${themes[overlayTheme as keyof typeof themes].iconText} ${overlayTheme[iconBgColors[selectedIcon?.name as keyof typeof iconBgColors]]}`}
+                                            className={`material-symbols-outlined text-[20px]  ${themes[overlayTheme as keyof typeof themes].iconText} ${iconBgColors[selectedIcon?.name as keyof typeof iconBgColors] || ''}`}
                                             style={{ fontVariationSettings: "'FILL' 1" }}
                                         >
                                             {selectedIcon?.name}

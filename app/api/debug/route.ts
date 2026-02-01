@@ -10,8 +10,7 @@ export async function GET() {
         tokenPreview: token ? token.value.substring(0, 10) + '...' : null,
         allCookies: cookieStore.getAll().map(c => ({
             name: c.name,
-            hasValue: !!c.value,
-            path: c.path
+            hasValue: !!c.value
         }))
     });
 }

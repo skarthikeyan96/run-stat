@@ -92,7 +92,6 @@ const MapboxRoute = forwardRef<MapboxRouteHandle, MapLibreRouteProps>(({
             },
             interactive: false,
             attributionControl: false,
-            preserveDrawingBuffer: true,
         });
 
         map.current.on('load', () => {
