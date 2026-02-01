@@ -4,6 +4,7 @@ import { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { Search, Zap, Clock, Calendar, Dumbbell } from 'lucide-react';
 import { StravaActivity } from '@/lib/types';
+import Header from '@/components/header';
 
 // Helper to detect if activity is likely a treadmill run
 function isTreadmillRun(activity: StravaActivity): boolean {
@@ -75,7 +76,7 @@ function coordsToSvgPath(coords: [number, number][], width: number, height: numb
 
   const lats = coords.map(c => c[0]);
   const lngs = coords.map(c => c[1]);
-  
+
   const minLat = Math.min(...lats);
   const maxLat = Math.max(...lats);
   const minLng = Math.min(...lngs);
@@ -130,7 +131,7 @@ function ActivityThumbnail({ activity }: { activity: StravaActivity }) {
       <div className="relative w-full h-36 overflow-hidden rounded-xl mb-4">
         {/* Background gradient */}
         <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900" />
-        
+
         {/* Subtle grid pattern */}
         <svg className="absolute inset-0 w-full h-full opacity-20">
           <defs>
@@ -157,7 +158,7 @@ function ActivityThumbnail({ activity }: { activity: StravaActivity }) {
               </feMerge>
             </filter>
           </defs>
-          
+
           {/* Glow effect path */}
           <path
             d={path}
@@ -169,7 +170,7 @@ function ActivityThumbnail({ activity }: { activity: StravaActivity }) {
             opacity="0.3"
             filter={`url(#glow-${activity.id})`}
           />
-          
+
           {/* Main path */}
           <path
             d={path}
@@ -180,7 +181,7 @@ function ActivityThumbnail({ activity }: { activity: StravaActivity }) {
             strokeLinejoin="round"
             className="drop-shadow-lg"
           />
-          
+
           {/* Start point */}
           {coords.length > 0 && (
             <>
@@ -215,12 +216,12 @@ function ActivityThumbnail({ activity }: { activity: StravaActivity }) {
       <div className="relative w-full h-36 overflow-hidden rounded-xl mb-4">
         {/* Dark gradient background */}
         <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900" />
-        
+
         {/* Subtle horizontal lines like treadmill belt */}
         <div className="absolute inset-0 flex flex-col justify-center gap-2 px-6 opacity-20">
           {[...Array(5)].map((_, i) => (
-            <div 
-              key={i} 
+            <div
+              key={i}
               className="h-px w-full"
               style={{ backgroundColor: colors.start }}
             />
@@ -230,16 +231,16 @@ function ActivityThumbnail({ activity }: { activity: StravaActivity }) {
         {/* Central icon and label */}
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center">
-            <div 
+            <div
               className="w-14 h-14 rounded-2xl mx-auto flex items-center justify-center mb-2 border-2"
-              style={{ 
+              style={{
                 backgroundColor: `${colors.start}15`,
                 borderColor: `${colors.start}40`
               }}
             >
               <Dumbbell className="w-7 h-7" style={{ color: colors.start }} />
             </div>
-            <p 
+            <p
               className="text-xs font-semibold uppercase tracking-widest"
               style={{ color: colors.start }}
             >
@@ -259,7 +260,7 @@ function ActivityThumbnail({ activity }: { activity: StravaActivity }) {
     <div className="relative w-full h-36 overflow-hidden rounded-xl mb-4">
       {/* Animated gradient background */}
       <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900" />
-      
+
       {/* Subtle pattern */}
       <div className="absolute inset-0 opacity-30">
         <svg className="w-full h-full" preserveAspectRatio="xMidYMid slice">
@@ -275,16 +276,16 @@ function ActivityThumbnail({ activity }: { activity: StravaActivity }) {
       {/* Central icon */}
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="text-center">
-          <div 
+          <div
             className="w-14 h-14 rounded-2xl mx-auto flex items-center justify-center mb-2 border-2"
-            style={{ 
+            style={{
               backgroundColor: `${colors.start}15`,
               borderColor: `${colors.start}40`
             }}
           >
             <Zap className="w-7 h-7" style={{ color: colors.start }} />
           </div>
-          <p 
+          <p
             className="text-xs font-semibold uppercase tracking-widest"
             style={{ color: colors.start }}
           >
@@ -457,45 +458,7 @@ export default function CustomizePage() {
       </div>
 
       {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-gray-900/50 backdrop-blur-xl bg-black/50">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            {/* Logo */}
-            <div className="flex items-center gap-3 group cursor-pointer">
-              <div className="w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-orange-500/30">
-                <span className="text-xl font-bold">⚡</span>
-              </div>
-              <h1 className="text-xl font-bold group-hover:text-orange-400 transition-colors">Elite Card Studio</h1>
-            </div>
-
-            {/* Navigation & Profile */}
-            <div className="flex items-center gap-8">
-              <nav className="flex items-center gap-6">
-                <button className="text-white font-medium hover:text-orange-400 transition-colors duration-300">
-                  My Activities
-                </button>
-                <button className="text-gray-400 hover:text-gray-300 transition-colors duration-300">
-                  Templates
-                </button>
-                <button className="text-gray-400 hover:text-gray-300 transition-colors duration-300">
-                  Showcase
-                </button>
-              </nav>
-
-              {/* User Profile */}
-              <div className="flex items-center gap-3 pl-6 border-l border-gray-800">
-                <div className="text-right">
-                  <p className="text-sm font-semibold">Strava Athlete</p>
-                  <p className="text-xs text-orange-400 font-bold">CONNECTED</p>
-                </div>
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex-shrink-0 overflow-hidden shadow-lg shadow-orange-500/20 flex items-center justify-center">
-                  <span className="text-white font-bold text-lg">⚡</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-6 py-16">
@@ -533,8 +496,8 @@ export default function CustomizePage() {
                 All Years
               </SelectItem>
               {availableYears.map(year => (
-                <SelectItem 
-                  key={year} 
+                <SelectItem
+                  key={year}
                   value={year}
                   className="focus:bg-orange-500/20 focus:text-white cursor-pointer"
                 >
@@ -641,20 +604,19 @@ export default function CustomizePage() {
           <Pagination className="mt-12">
             <PaginationContent className="gap-2">
               <PaginationItem>
-                <PaginationPrevious 
+                <PaginationPrevious
                   onClick={() => currentPage > 1 && setCurrentPage(p => p - 1)}
-                  className={`border border-gray-800 bg-transparent text-white hover:bg-orange-500/10 hover:border-orange-500/50 hover:text-white rounded-xl transition-all duration-300 ${
-                    currentPage === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'
-                  }`}
+                  className={`border border-gray-800 bg-transparent text-white hover:bg-orange-500/10 hover:border-orange-500/50 hover:text-white rounded-xl transition-all duration-300 ${currentPage === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'
+                    }`}
                 />
               </PaginationItem>
-              
+
               {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => {
-                const showPage = 
-                  page === 1 || 
-                  page === totalPages || 
+                const showPage =
+                  page === 1 ||
+                  page === totalPages ||
                   Math.abs(page - currentPage) <= 1;
-                
+
                 const showEllipsisBefore = page === currentPage - 2 && currentPage > 3;
                 const showEllipsisAfter = page === currentPage + 2 && currentPage < totalPages - 2;
 
@@ -673,11 +635,10 @@ export default function CustomizePage() {
                     <PaginationLink
                       onClick={() => setCurrentPage(page)}
                       isActive={currentPage === page}
-                      className={`rounded-xl transition-all duration-300 cursor-pointer ${
-                        currentPage === page
+                      className={`rounded-xl transition-all duration-300 cursor-pointer ${currentPage === page
                           ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white border-orange-500 shadow-lg shadow-orange-500/30 hover:bg-orange-600 hover:text-white'
                           : 'border border-gray-800 bg-transparent text-gray-400 hover:border-orange-500/50 hover:text-white hover:bg-orange-500/10'
-                      }`}
+                        }`}
                     >
                       {page}
                     </PaginationLink>
@@ -686,11 +647,10 @@ export default function CustomizePage() {
               })}
 
               <PaginationItem>
-                <PaginationNext 
+                <PaginationNext
                   onClick={() => currentPage < totalPages && setCurrentPage(p => p + 1)}
-                  className={`border border-gray-800 bg-transparent text-white hover:bg-orange-500/10 hover:border-orange-500/50 hover:text-white rounded-xl transition-all duration-300 ${
-                    currentPage === totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer'
-                  }`}
+                  className={`border border-gray-800 bg-transparent text-white hover:bg-orange-500/10 hover:border-orange-500/50 hover:text-white rounded-xl transition-all duration-300 ${currentPage === totalPages ? 'pointer-events-none opacity-50' : 'cursor-pointer'
+                    }`}
                 />
               </PaginationItem>
             </PaginationContent>

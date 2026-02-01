@@ -119,7 +119,94 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Custom theme colors */
+@layer utilities {
+  .bg-background-light {
+    background-color: #f8f6f5;
+  }
+
+  .bg-background-dark {
+    background-color: #181310;
+  }
+
+  .bg-strava-orange {
+    background-color: #fc4e03;
+  }
+
+  .bg-midnight-black {
+    background-color: #000000;
+  }
+
+  .bg-electric-blue {
+    background-color: #0070f3;
+  }
+
+  .bg-forest-green {
+    background-color: #1db954;
+  }
+
+  .bg-primary {
+    background-color: #fc4e03;
+  }
+
+  .text-primary {
+    color: #fc4e03;
+  }
+
+  .border-primary {
+    border-color: #fc4e03;
+  }
+
+  .stroke-primary {
+    stroke: #fc4e03;
+  }
+
+  .shadow-primary\/20 {
+    --tw-shadow-color: rgb(252 78 3 / 0.2);
+    --tw-shadow: var(--tw-shadow-colored);
+  }
+}
+
+/* Glass effect */
+.glass-effect {
+  backdrop-filter: blur(16px);
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+/* Topo overlay pattern */
+.topo-overlay {
+  background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuAyuMOilhQk0Iq1kkKzlKnc-7UEjcw8xPbE2pkaQPdbMouqnslqbsQpvpKkOci4D9NjAEjQoAfiCzVpxQqS9lxp5uuXY0uiwxmL2TfmJmGSJtKhldVwQ5mUHBdPmnwL5U1x63MHIYO_3EtvoRz8Miwglvi1yz0Sl75nX55vU8KKaBn85HIkFhlBpPuk-JBr9vCTM1p_OQ0Z7CMCNyj0FyH9ATxHRTTJOCsaPH0PFlKMwjH-UTyZGW9fBa2woaI3ylMqVYG4sruNpCiT);
+  opacity: 0.1;
+}
+
+/* Custom scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+}
+
+/* Instagram grid */
+.instagram-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+}
+
+/* Theme color CSS variable */
+:root {
+  --theme-color: #fc4e03;
 }
