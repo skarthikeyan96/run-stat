@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { StravaActivity } from '@/lib/types';
 import Header from '@/components/header';
+import MapboxRoute from '@/components/mapbox-route';
 export default function EditorPage() {
     const params = useParams();
     const router = useRouter();
@@ -101,6 +102,8 @@ export default function EditorPage() {
             </div>
         );
     }
+
+    console.log(activity);
 
     return (
         <div className=" bg-black text-white">
@@ -201,14 +204,16 @@ export default function EditorPage() {
                                         "url('https://lh3.googleusercontent.com/aida-public/AB6AXuALTdR4diz1Q4oc4CkkkVA1EJgMlPzSu17BWo_AhrTNNKtsQfJ5qQYOQHTkWb7yu-d7oM4rsaDHQX07RfTofJAcpluykao3dGkFJD9yB3BpCsss-jVhS-8-79i_vsoC1BoN2woeqVRQCbyeakv1zv5hUwQDLoOXdVNOm3cJl2F3cdysJNkLifETjRXwRW0sysx8lujACi8FZ1AbCfG77Y580ucimVY3Yi6_NgIA3-JAP50ILGpjdTlxwBleU-N3WzE0cEtPw-BPIeab')",
                                 }}
                             ></div>
-                            <div
-                                className="absolute inset-0 bg-cover bg-center mix-blend-overlay opacity-30"
-                                style={{
-                                    backgroundImage:
-                                        "url('https://lh3.googleusercontent.com/aida-public/AB6AXuDTvk30J2EYxsM0ghX14WH_RSEp1wdjBVaaCzg1Eou3d2TyMyDIy00lhMLBs1g1XHMZ1uC1EZ7KWeK4MBQ072dcfiJpPOIz7BS3ZuC5yZCjxuJi1lF4V9pC7_hPXiGVIpe5ZcePvV5vVgYWGPrY9A5j9T1IvK0JTv4Mu7tpGeEI6X-3V95HTw5O4KtOxTXsLHiWsWUtf0ZnkZuiyKWHPjEnsLHHirdpS-nnyvFs6TL-zrKWm7QVP3IkGR9KGQncAuqzT_HQY8lW4TPL')",
-                                    filter: "invert(1)",
-                                }}
-                            ></div>
+                            {activity.map?.summary_polyline && (
+                                <div className="absolute inset-0 mix-blend-overlay opacity-40">
+                                    <MapboxRoute
+                                        encodedPolyline={activity.map.summary_polyline}
+                                        routeColor="#FC4C02"
+                                        routeWidth={5}
+                                        mapStyle="cartoDark"
+                                    />
+                                </div>
+                            )}
                             <div className="absolute inset-0 topo-overlay pointer-events-none"></div>
                             <div className="absolute top-8 left-8">
                                 <div className="glass-effect pl-1 pr-5 py-1 rounded-full flex items-center gap-3 border border-white/20 shadow-lg">
