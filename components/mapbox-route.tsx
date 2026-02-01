@@ -1,18 +1,14 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useImperativeHandle, forwardRef } from 'react';
 import maplibregl from 'maplibre-gl';
 import polyline from '@mapbox/polyline';
 
 import 'maplibre-gl/dist/maplibre-gl.css';
 
-// Free dark map styles - no API key required
 const FREE_MAP_STYLES = {
-    // CartoCDN Dark Matter - beautiful dark style, completely free
     cartoDark: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',
-    // CartoCDN Voyager - light style alternative
     cartoVoyager: 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json',
-    // Positron - minimal light style
     cartoPositron: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json',
 };
 
@@ -24,25 +20,54 @@ interface MapLibreRouteProps {
     mapStyle?: 'cartoDark' | 'cartoVoyager' | 'cartoPositron' | string;
 }
 
-export default function MapboxRoute({
+// Export handle type for TypeScript
+export interface MapboxRouteHandle {
+    getMapCanvas: () => Promise<string>;
+}
+
+const MapboxRoute = forwardRef<MapboxRouteHandle, MapLibreRouteProps>(({
     encodedPolyline,
     className = '',
-    routeColor = '#FC4C02', // Strava orange
+    routeColor = '#FC4C02',
     routeWidth = 4,
     mapStyle = 'cartoDark',
-}: MapLibreRouteProps) {
+}, ref) => {
     const mapContainer = useRef<HTMLDivElement>(null);
     const map = useRef<maplibregl.Map | null>(null);
+
+    // Expose getMapCanvas method to parent
+    useImperativeHandle(ref, () => ({
+        getMapCanvas: () => {
+            return new Promise<string>((resolve, reject) => {
+                if (!map.current) {
+                    reject(new Error('Map not initialized'));
+                    return;
+                }
+
+                map.current.once('render', () => {
+                    if (map.current) {
+                        try {
+                            const dataUrl = map.current.getCanvas().toDataURL('image/png', 1.0);
+                            resolve(dataUrl);
+                        } catch (error) {
+                            reject(error);
+                        }
+                    }
+                });
+
+                // Trigger render
+                map.current.setBearing(map.current.getBearing());
+            });
+        }
+    }));
 
     useEffect(() => {
         if (!mapContainer.current || !encodedPolyline) return;
 
-        // Decode the polyline
         const coordinates = polyline.decode(encodedPolyline).map(([lat, lng]) => [lng, lat]);
 
         if (coordinates.length === 0) return;
 
-        // Calculate bounds
         const bounds = coordinates.reduce(
             (bounds, coord) => {
                 return [
@@ -56,10 +81,8 @@ export default function MapboxRoute({
             ]
         );
 
-        // Get style URL
         const styleUrl = FREE_MAP_STYLES[mapStyle as keyof typeof FREE_MAP_STYLES] || mapStyle;
 
-        // Initialize map
         map.current = new maplibregl.Map({
             container: mapContainer.current,
             style: styleUrl,
@@ -67,14 +90,14 @@ export default function MapboxRoute({
             fitBoundsOptions: {
                 padding: 40,
             },
-            interactive: false, // Disable interactions for overlay use
+            interactive: false,
             attributionControl: false,
+            preserveDrawingBuffer: true,
         });
 
         map.current.on('load', () => {
             if (!map.current) return;
 
-            // Add route source
             map.current.addSource('route', {
                 type: 'geojson',
                 data: {
@@ -87,7 +110,6 @@ export default function MapboxRoute({
                 },
             });
 
-            // Add glow effect layer (wider, more transparent)
             map.current.addLayer({
                 id: 'route-glow',
                 type: 'line',
@@ -104,7 +126,6 @@ export default function MapboxRoute({
                 },
             });
 
-            // Add main route layer
             map.current.addLayer({
                 id: 'route',
                 type: 'line',
@@ -120,18 +141,16 @@ export default function MapboxRoute({
                 },
             });
 
-            // Add start marker
             if (coordinates.length > 0) {
                 new maplibregl.Marker({
-                    color: '#22c55e', // Green for start
+                    color: '#22c55e',
                     scale: 0.7,
                 })
                     .setLngLat(coordinates[0] as [number, number])
                     .addTo(map.current!);
 
-                // Add end marker
                 new maplibregl.Marker({
-                    color: '#ef4444', // Red for end
+                    color: '#ef4444',
                     scale: 0.7,
                 })
                     .setLngLat(coordinates[coordinates.length - 1] as [number, number])
@@ -151,4 +170,8 @@ export default function MapboxRoute({
             style={{ width: '100%', height: '100%' }}
         />
     );
-}
+});
+
+MapboxRoute.displayName = 'MapboxRoute';
+
+export default MapboxRoute;
