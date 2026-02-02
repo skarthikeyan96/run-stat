@@ -16,90 +16,7 @@ export default function EditorPage() {
 
     // Add download function
 
-    // async function handleDownload(format: '4:5' | '9:16' = '4:5') {
-    //     if (!cardRef.current) return;
 
-    //     try {
-    //         // Get map canvas if available
-    //         let mapDataUrl: string | null = null;
-    //         if (mapRef.current && activity && activity.map?.summary_polyline) {
-    //             mapDataUrl = await mapRef.current.getMapCanvas();
-    //         }
-
-    //         // Capture the full card
-    //         await new Promise(resolve => setTimeout(resolve, 500));
-
-    //         const cardDataUrl = await toPng(cardRef.current, {
-    //             quality: 1,
-    //             pixelRatio: 3,
-    //             cacheBust: false,
-    //             width: cardRef.current.offsetWidth + 40,  // Add 40px padding
-    //             height: cardRef.current.offsetHeight + 40,
-    //             style: {
-    //                 margin: '20px',  // Center it
-    //             },
-    //             backgroundColor: undefined,
-    //         });
-
-    //         // If we have the map, composite it
-    //         if (mapDataUrl) {
-    //             const cardElement = cardRef.current;
-    //             const cardRect = cardElement.getBoundingClientRect();
-    //             const scale = 3;
-
-    //             const canvas = document.createElement('canvas');
-    //             canvas.width = cardRect.width * scale;
-    //             canvas.height = cardRect.height * scale;
-    //             const ctx = canvas.getContext('2d')!;
-
-    //             // Draw card
-    //             const cardImg = new Image();
-    //             cardImg.src = cardDataUrl;
-    //             await new Promise(resolve => { cardImg.onload = resolve; });
-    //             ctx.drawImage(cardImg, 0, 0, canvas.width, canvas.height);
-
-    //             // Draw map overlay
-    //             const mapContainer = cardElement.querySelector('.absolute.inset-0.mix-blend-overlay') as HTMLElement;
-    //             if (mapContainer) {
-    //                 const mapImg = new Image();
-    //                 mapImg.src = mapDataUrl;
-    //                 await new Promise(resolve => { mapImg.onload = resolve; });
-
-    //                 const mapRect = mapContainer.getBoundingClientRect();
-    //                 const x = (mapRect.left - cardRect.left) * scale;
-    //                 const y = (mapRect.top - cardRect.top) * scale;
-    //                 const w = mapRect.width * scale;
-    //                 const h = mapRect.height * scale;
-
-    //                 ctx.save();
-    //                 ctx.globalCompositeOperation = 'overlay';
-    //                 ctx.globalAlpha = 0.4;
-    //                 ctx.drawImage(mapImg, x, y, w, h);
-    //                 ctx.restore();
-    //             }
-
-    //             canvas.toBlob((blob) => {
-    //                 if (!blob) return;
-    //                 const url = URL.createObjectURL(blob);
-    //                 const link = document.createElement('a');
-    //                 link.href = url;
-    //                 link.download = `runstat-${customLabel.toLowerCase().replace(/\s+/g, '-')}-${format}.png`;
-    //                 link.click();
-    //                 URL.revokeObjectURL(url);
-    //             }, 'image/png', 1.0);
-    //         } else {
-    //             // No map, just download card
-    //             const link = document.createElement('a');
-    //             link.href = cardDataUrl;
-    //             link.download = `runstat-${customLabel.toLowerCase().replace(/\s+/g, '-')}-${format}.png`;
-    //             link.click();
-    //         }
-
-    //     } catch (error) {
-    //         console.error('Download failed:', error);
-    //         alert('Failed to download. Please try again.');
-    //     }
-    // }
 
     async function handleDownload(format: '4:5' | '9:16' = '4:5') {
         if (!cardRef.current) return;
@@ -234,34 +151,38 @@ export default function EditorPage() {
         return `${minutes}:${secs.toString().padStart(2, '0')}`;
     };
 
+    type SelectedIcon = {
+        name: string;
+        label: string;
+    };
 
     const [activity, setActivity] = useState<StravaActivity | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [selectedIcon, setSelectedIcon] = useState<{ name: string; label: string } | null>({ name: 'grade', label: 'Star' });
+    const [selectedIcon, setSelectedIcon] = useState<SelectedIcon | null>({ name: 'grade', label: 'Star' });
     const [activeCategory, setActiveCategory] = useState<string>('achievements');
     const [personalQuote, setPersonalQuote] = useState<string>('');
     const [customLabel, setCustomLabel] = useState<string>('');
 
     // Icon background colors to match the icon vibe
-    const iconBgColors = {
-        'grade': 'bg-yellow-400',           // Star - gold
-        'local_fire_department': 'bg-orange-500', // Fire - orange
-        'emoji_events': 'bg-amber-400',     // Trophy - gold
-        'bolt': 'bg-blue-400',              // Lightning - blue
-        'favorite': 'bg-red-400',           // Heart - red
-        'military_tech': 'bg-green-400',     // Medal - green
-        'directions_run': 'bg-purple-400',   // Runner - purple
-        'footprint': 'bg-pink-400',         // Footprint - pink
-        'landscape': 'bg-cyan-400',         // Mountain - cyan
-        'forest': 'bg-teal-400',           // Trail - teal
-        'wb_twilight': 'bg-indigo-400',     // Sunrise - indigo
-        'nights_stay': 'bg-violet-400',     // Night - violet
-        'speed': 'bg-orange-400',           // Speed - orange
-        'trending_up': 'bg-green-400',      // Progress - green
-        'fitness_center': 'bg-blue-400',    // Strength - blue
-        'track_changes': 'bg-purple-400',   // Target - purple
-    };
+    // const iconBgColors = {
+    //     'grade': 'bg-yellow-400',           // Star - gold
+    //     'local_fire_department': 'bg-orange-500', // Fire - orange
+    //     'emoji_events': 'bg-amber-400',     // Trophy - gold
+    //     'bolt': 'bg-blue-400',              // Lightning - blue
+    //     'favorite': 'bg-red-400',           // Heart - red
+    //     'military_tech': 'bg-green-400',     // Medal - green
+    //     'directions_run': 'bg-purple-400',   // Runner - purple
+    //     'footprint': 'bg-pink-400',         // Footprint - pink
+    //     'landscape': 'bg-cyan-400',         // Mountain - cyan
+    //     'forest': 'bg-teal-400',           // Trail - teal
+    //     'wb_twilight': 'bg-indigo-400',     // Sunrise - indigo
+    //     'nights_stay': 'bg-violet-400',     // Night - violet
+    //     'speed': 'bg-orange-400',           // Speed - orange
+    //     'trending_up': 'bg-green-400',      // Progress - green
+    //     'fitness_center': 'bg-blue-400',    // Strength - blue
+    //     'track_changes': 'bg-purple-400',   // Target - purple
+    // };
 
     // State
     const [overlayTheme, setOverlayTheme] = useState('orange');
@@ -601,7 +522,7 @@ export default function EditorPage() {
                                 <div className="glass-effect pl-1 pr-5 py-1 rounded-full flex items-center gap-3 border border-white/20 shadow-lg">
                                     <div className={`size-10 rounded-full flex items-center justify-center ${themes[overlayTheme as keyof typeof themes].iconBg} ${themes[overlayTheme as keyof typeof themes].iconText}`}>
                                         <span
-                                            className={`material-symbols-outlined text-[20px]  ${themes[overlayTheme as keyof typeof themes].iconText} ${iconBgColors[selectedIcon?.name as keyof typeof iconBgColors] || ''}`}
+                                            className={`material-symbols-outlined text-[20px]  ${themes[overlayTheme as keyof typeof themes].iconText}`}
                                             style={{ fontVariationSettings: "'FILL' 1" }}
                                         >
                                             {selectedIcon?.name}
